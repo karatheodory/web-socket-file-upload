@@ -19,10 +19,9 @@ class WSClient {
                 // collect necessary file info.
                 const size = stats['size'];
                 const stream = fs.createReadStream(filePath, {
-                    'flags': 'r',
-                    //'encoding': 'binary',
-                    'mode': 0o666,
-                    'bufferSize': 1024
+                    flags: 'r',
+                    mode: 0o666,
+                    highWaterMark: 1024
                 });
                 const name = path.basename(filePath);
                 callback(null, {
@@ -45,6 +44,7 @@ class WSClient {
             (fileDescriptor, callback) => {
                 const stream = fileDescriptor.stream;
                 stream.on('end', () => {
+                    stream.close();
                     callback(null);
                 });
                 stream.on('data', (data) => {
