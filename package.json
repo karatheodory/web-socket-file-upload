@@ -12,6 +12,7 @@
   "dependencies": {
     "async": "1.5.2",
     "express": "4.13.4",
+    "optimist": "0.6.1",
     "ws": "1.0.1"
   }
 }

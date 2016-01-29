@@ -2,6 +2,7 @@
 
 const Express = require('express');
 const Http = require('http');
+const async = require('async');
 const WebSocketServer = require('ws').Server;
 
 const WSClient = require('./WSClient');
@@ -24,6 +25,14 @@ httpServer.listen(PORT, function() {
 
     console.log('The server is started on http://%s:%s', host, port);
     const wsClient = new WSClient();
-    wsClient.connect(host, port);
-    setTimeout(() => wsClient.uploadFile(__dirname + '/package.json'), 1000);
+    async.waterfall([
+        (callback) => wsClient.connect(host, port, callback),
+        (callback) => wsClient.uploadFile(__dirname + '/package.json', callback)
+    ], (error) => {
+        if (error) {
+            console.error('Upload failed:', JSON.stringify(error));
+        } else {
+            console.log('Upload successful.');
+        }
+    });
 });

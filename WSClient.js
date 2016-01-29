@@ -22,7 +22,7 @@ class WSClient {
                     'flags': 'r',
                     //'encoding': 'binary',
                     'mode': 0o666,
-                    'bufferSize': 64 * 1024
+                    'bufferSize': 1024
                 });
                 const name = path.basename(filePath);
                 callback(null, {
@@ -32,7 +32,7 @@ class WSClient {
                 });
             },
             (fileDescriptor, callback) => {
-                // Send file info.
+                // Send file info first.
                 const fileInfo = {
                     name: fileDescriptor.name,
                     size: fileDescriptor.size
@@ -60,11 +60,13 @@ class WSClient {
                 });
             }
         ], callback);
-
-
     }
 
-    connect(host, port) {
+    disconnect() {
+        this.socket.close();
+    }
+
+    connect(host, port, callback) {
         const address = 'ws://' + host + ':' + port;
         this.socket = new WebSocketClient(address);
         this.socket.on('message', (message) => {
@@ -78,6 +80,9 @@ class WSClient {
         this.socket.on('error', (error) => {
             console.log('Server socket error: ' + error);
         });
+
+        // No 'connected' event, so just wait and hope.
+        setTimeout(callback, 1000);
     }
 }
 
