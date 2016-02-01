@@ -26,7 +26,7 @@ httpServer.listen(PORT, function() {
     console.log('The server is started on http://%s:%s', host, port);
     const wsClient = new WSClient();
     async.waterfall([
-        (callback) => wsClient.connect(host, port, callback),
+        (callback) => wsClient.connect('ws://' + host + ':' + port, callback),
         (callback) => wsClient.uploadFile(__dirname + '/package.json', callback)
     ], (error) => {
         if (error) {

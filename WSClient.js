@@ -13,10 +13,11 @@ class WSClient {
 
         async.waterfall([
             (callback) => {
+                console.log('Getting file stats...');
                 fs.stat(filePath, callback);
             },
             (stats, callback) => {
-                // collect necessary file info.
+                console.log('Collect necessary file info...');
                 const size = stats['size'];
                 const stream = fs.createReadStream(filePath, {
                     flags: 'r',
@@ -31,9 +32,10 @@ class WSClient {
                 });
             },
             (fileDescriptor, callback) => {
+                console.log('Sending file info...');
                 // Send file info first.
                 const fileInfo = {
-                    name: fileDescriptor.name,
+                    sample_id: fileDescriptor.name,
                     size: fileDescriptor.size
                 };
                 const fileInfoString = JSON.stringify(fileInfo);
@@ -42,6 +44,7 @@ class WSClient {
                 });
             },
             (fileDescriptor, callback) => {
+                console.log('Sending file...');
                 const stream = fileDescriptor.stream;
                 stream.on('end', () => {
                     stream.close();
@@ -66,8 +69,7 @@ class WSClient {
         this.socket.close();
     }
 
-    connect(host, port, callback) {
-        const address = 'ws://' + host + ':' + port;
+    connect(address, callback) {
         this.socket = new WebSocketClient(address);
         this.socket.on('message', (message) => {
             console.log('Server message');
