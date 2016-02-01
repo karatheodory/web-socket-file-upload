@@ -3,6 +3,8 @@
 const fs = require('fs');
 const path = require('path');
 const async = require('async');
+const Uuid = require('node-uuid');
+
 const WebSocketClient = require('ws');
 
 class WSClient {
@@ -35,6 +37,7 @@ class WSClient {
                 console.log('Sending file info...');
                 // Send file info first.
                 const fileInfo = {
+                    id: Uuid.v4(), // Session id.
                     sample_id: fileDescriptor.name,
                     size: fileDescriptor.size
                 };
@@ -72,7 +75,7 @@ class WSClient {
     connect(address, callback) {
         this.socket = new WebSocketClient(address);
         this.socket.on('message', (message) => {
-            console.log('Server message');
+            console.log('Server message: ' + message);
         });
 
         this.socket.on('close', () => {
@@ -80,7 +83,7 @@ class WSClient {
         });
 
         this.socket.on('error', (error) => {
-            console.log('Server socket error: ' + error);
+            console.log('Server socket error: ' + JSON.stringify(error));
         });
 
         // No 'connected' event, so just wait and hope.
