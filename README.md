@@ -13,6 +13,10 @@ Now you have `nvm` command. Use it to install Node.js version 4.2.2 or later (te
 
     nvm install 4.2.2
 
+Do the following command to install project dependencies:
+
+    npm install
+
 After that `node` command is available, and you should be able to launch the upload script with the following command:
 
     node upload.js --path path/to/file.here --host host --port port
