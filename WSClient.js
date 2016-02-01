@@ -8,7 +8,7 @@ const WebSocketClient = require('ws');
 class WSClient {
     uploadFile(filePath, callback) {
         if (!this.socket) {
-            throw new Error('Socket is disconnected');
+            callback(new Error('Socket is disconnected'));
         }
 
         async.waterfall([
